@@ -20,3 +20,5 @@ But for the next stage, it will be easier to use for everyone( not really ～(�
 红石音乐，每个音点过去太累了，命令方块也得一个个写。。于是就写了个代码用于生成函数文件，放到MC里直接调用就行咯
 
 不过我还没测试过hhhh，应该问题不大~
+
+BTW，我还是想把项目名称改成：让猪猪也能做红石音乐！

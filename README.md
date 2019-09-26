@@ -7,8 +7,16 @@ That vedio was fully handmade( with a little help of mcedit), which was readlly 
 
 So after that, I began to consider about doing it automatically
 
+What's the different between my code and Note Block Studio?
+
+Well...
+
 For now, the code only works on my computer.
 
-Because it requires a csv file and a basic redstone music track in minecraft.
+Because it requires a csv file, my personal piano resourcepack and a basic redstone music track in minecraft.
 
 But for the next stage, it will be easier to use for everyone( not really ～(￣▽￣～)~ )
+
+红石音乐，每个音点过去太累了，命令方块也得一个个写。。于是就写了个代码用于生成函数文件，放到MC里直接调用就行咯
+
+不过我还没测试过hhhh，应该问题不大~

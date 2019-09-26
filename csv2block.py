@@ -5,15 +5,17 @@ import os
 import csv
 from FunDefs import SetBlockRight,SetBlockLeft,GenKeyDic
 
-inpath='NoteSource/'
-outpath='function/'
+inpath=''
+filename='notes.csv'
 namespace='gnrate'
-speed=3 # X T/note
-BPos=['21','5','0'] # [X,Y,Z] of actor_21
+outpath='data/'+namespace+'/functions/'
+
+speed=4 # X T/note
+BPos=['21','5','-25'] # [X,Y,Z] of actor_21
 
 
 
-f=open(inpath+"notes.csv")
+f=open(inpath+filename)
 f_csv=csv.reader(f)
 data={}  #data{XJ:{offset:[note]}}
 i=0
@@ -41,14 +43,14 @@ for xj in range(1,i+1):
     output.write(bfer)
     output.close()
 
-AllXJ=open(outpath+'ALLXJ.mcfunction','w+')
+AllXJ=open(outpath+'allxj.mcfunction','w+')
 bfer=''
 for k in range(1,i+1):
-    Str_setXJ='function '+namespace+':XJ'+str(k)+'\n'
+    Str_setXJ='execute at @s run function '+namespace+':xj'+str(k)+'\n'
     if k%2!=0:
-        Str_TP='tp ~'+str(16*speed+2)+' ~ ~'+'6'+'\n'
+        Str_TP='execute at @s run tp ~'+str(16*speed+2)+' ~ ~'+'6'+'\n'
     else:
-        Str_TP='tp ~-'+str(16*speed+2)+' ~ ~'+'4'+'\n'
+        Str_TP='execute at @s run tp ~-'+str(16*speed+2)+' ~ ~'+'4'+'\n'
     bfer+=Str_setXJ+Str_TP
 AllXJ.write(bfer)
 AllXJ.close()

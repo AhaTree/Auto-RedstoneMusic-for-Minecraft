@@ -3,7 +3,7 @@
 
 import os
 import csv
-from FunDefs import SetBlockRight,SetBlockLeft,GenKeyDic
+from FunDefs import SetBlockRight,SetBlockLeft
 
 inpath=''
 filename='notes.csv'
@@ -43,14 +43,18 @@ for xj in range(1,i+1):
     output.write(bfer)
     output.close()
 
+
 AllXJ=open(outpath+'allxj.mcfunction','w+')
 bfer=''
 for k in range(1,i+1):
     Str_setXJ='execute at @s run function '+namespace+':xj'+str(k)+'\n'
-    if k%2!=0:
+    if k%2!=0: 
+        Str_Clear='execute at @s run fill ~1 ~1 ~ ~'+str(16*speed)+' ~4 ~1 minecraft:air replace\n'
         Str_TP='execute at @s run tp ~'+str(16*speed+2)+' ~ ~'+'6'+'\n'
     else:
+        Str_Clear='execute at @s run fill ~-1 ~1 ~ ~-'+str(16*speed)+' ~4 ~-1 minecraft:air replace\n'
         Str_TP='execute at @s run tp ~-'+str(16*speed+2)+' ~ ~'+'4'+'\n'
-    bfer+=Str_setXJ+Str_TP
+    bfer+=Str_Clear+Str_setXJ+Str_TP
 AllXJ.write(bfer)
 AllXJ.close()
+print('END')

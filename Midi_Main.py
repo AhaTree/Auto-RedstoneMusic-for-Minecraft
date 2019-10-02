@@ -3,13 +3,13 @@ import csv
 from struct import unpack
 from Midi_FunDef import parse_event,parse_time
 
-inpath='MidTest/'
-outpath='Function Test/'
+inpath=''
+outpath=''
 filename='XTDM_T1'
 f=open(inpath+filename+'.mid',mode='rb')
 result=open(outpath+filename+'.csv','w+',newline='')
 Result=csv.writer(result)
-Result.writerow(['','Speed','############','*'])
+Result.writerow(['N']) #Will be replace by Block_Per_Offset
 
 H_MThd=f.read(4)
 if H_MThd!=b'MThd':
@@ -19,8 +19,9 @@ H_Track_fmt=unpack('>H',f.read(2))[0]
 H_Track_num=unpack('>H',f.read(2))[0]
 H_BscTick=unpack('>H',f.read(2))[0]
 Tick_Per_XJ=H_BscTick*4
-Tick_Per_Note=H_BscTick/4
+Tick_Per_Offset=H_BscTick/4
 Tick_Speed=0
+
 print('Track format: ',H_Track_fmt)
 print('Track number: ',H_Track_num)
 print('Basic tick: ',H_BscTick,' ticks per 1/4 note')
@@ -46,13 +47,17 @@ for Track_Num in range(H_Track_num):
         Key_TotalTime+=Chunk_DeltaTime
         Key_DeltaTime+=Chunk_DeltaTime
         Event_Data=parse_event(f)
+
         if 'Track_Speed' in Event_Data:
             Tick_Speed=Event_Data['Track_Speed']
+            MS_Per_Offset=Tick_Speed/1000/4
+            Block_Per_Offset=int(MS_Per_Offset/50)
+            Tick_Per_Block=int(Tick_Per_Offset/Block_Per_Offset)
         if Event_Data['Event_Type']=='press':
             Key_PresentXJ=(Key_TotalTime//Tick_Per_XJ)+1
             Key_Offset_Tick=(Key_TotalTime%Tick_Per_XJ)
-            Key_Offset_Note=int(Key_Offset_Tick//Tick_Per_Note)+1
-            Key_Offset_Remain=int(Key_Offset_Tick%Tick_Per_Note)
+            Key_Offset_Note=int(Key_Offset_Tick//Tick_Per_Offset)+1
+            Key_Offset_Remain=int((Key_Offset_Tick%Tick_Per_Offset)//Tick_Per_Block)+1
             Note=Event_Data['Note']
             #print('present XJ:',Key_PresentXJ,end=' ,')
             #print('offset:',Key_Offset_Note,end=' ,')
@@ -62,9 +67,11 @@ for Track_Num in range(H_Track_num):
             Result.writerow(Note_Present)
             Key_DeltaTime=0
         Track_Flag=Event_Data['TFlag']
+
     print('Track',Track_Num+1,' done')
+
 result.seek(0)
-Result.writerow([str(Tick_Speed)])
+Result.writerow([str(Block_Per_Offset)])
 result.close()
 
 print('END')

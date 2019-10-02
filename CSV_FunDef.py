@@ -2,6 +2,10 @@ def ReadSCV(f):
     data={}    #data={XJ:{offset:{remain:[note]}}}
     for row in f:
         [xj,offset,remain,note]=row
+        xj=int(xj)
+        offset=int(offset)
+        remain=int(remain)
+        note=int(note)
         if not xj in data:
             data[xj]={}
         if not offset in data[xj]:
@@ -42,16 +46,13 @@ def SetBlockRight(offset,OFFSET,speed,BPos):  #OFFSET={remain:[notes]}
         
         NOTES=OFFSET[remain]
         Kcount=len(NOTES) # key number
-        pos=(offset-1)*speed+1
+        pos=(offset-1)*speed+remain
         Height=0
 
         for k in range(Kcount):
 
             [px,py,pz]=['','1','']
             note=NOTES[k]
-            if note<0:
-                pos+=1
-                Height=0
             px=str(pos)
             if pos%2==0:
                 pz='1'
@@ -64,28 +65,28 @@ def SetBlockRight(offset,OFFSET,speed,BPos):  #OFFSET={remain:[notes]}
             
     return bufer
 
-def SetBlockLeft(offset,NOTES,speed,BPos):
-      
+def SetBlockLeft(offset,OFFSET,speed,BPos):
+     
     bufer=''
-    Kcount=len(NOTES) # key number
-    pos=(offset-1)*speed+1
-    Height=0
-    for k in range(Kcount):
-
-        [px,py,pz]=['','1','']
-        note=NOTES[k]
-        if note<0:
-            pos+=1
-            Height=0
-        px=str(-pos)
-        if pos%2==0:
-            pz='-1'
-        if Height:
-            py=str(Height+1)
-
+    for remain in OFFSET:
         
-        BPOS=[str(abs(note)),BPos[1],BPos[2]]       
-        bufer+=SetBlock([px,py,pz],BPOS,bool(Height))
-        Height+=1
+        NOTES=OFFSET[remain]
+        Kcount=len(NOTES) # key number
+        pos=(offset-1)*speed+remain
+        Height=0
 
+        for k in range(Kcount):
+
+            [px,py,pz]=['','1','']
+            note=NOTES[k]
+            px=str(-pos)
+            if pos%2==0:
+                pz='-1'
+            if Height:
+                py=str(Height+1)
+            
+            BPOS=[str(abs(note)),BPos[1],BPos[2]]       
+            bufer+=SetBlock([px,py,pz],BPOS,bool(Height))
+            Height+=1
+            
     return bufer

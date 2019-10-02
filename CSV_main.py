@@ -5,38 +5,36 @@ import os
 import csv
 from CSV_FunDef import SetBlockRight,SetBlockLeft,ReadSCV
 
-inpath='Function Test/'
-filename='XTDM_T1.csv'
-namespace='gnrate'
-outpath='Function Test/data/'+namespace+'/functions/'
+inpath=''
+TRACK='2'
+filename='XTDM_T'+TRACK+'.csv'
+namespace='track'+TRACK
+outpath='functions/'
 
 
-BPos=['21','5','-25'] # [X,Y,Z] of actor_21
+BPos=['21','5','-35'] # [X,Y,Z] of actor_21
 
 
 
 f=open(inpath+filename)
 f_csv=csv.reader(f)
-MS_Per_Offset=int(next(f_csv)[0])/4/1000
-MTick_Per_Offset=round(MS_Per_Offset/50)
-speed=MTick_Per_Offset # X T/note
-next(f_csv)
-
+speed=int(next(f_csv)[0])# X T/note
 
 data={}  #data={XJ:{offset:{remain:[note]}}}
 
 data=ReadSCV(f_csv)
 
-i=len(data)
-for xj in range(1,i+1):
-    XJ=data[xj]
-    # print(XJ)
-    bfer=''
-
-    for offset in XJ:
-        NOTES=XJ[offset]
-        bfer+=( SetBlockRight(offset,NOTES,speed,BPos) if xj%2!=0 else SetBlockLeft(offset,NOTES,speed,BPos) )
-    output=open(outpath+'XJ'+str(xj)+'.mcfunction','w+')
+i=30
+for xj in range(1,i+1): 
+    bfer='say '+'Track '+TRACK+' XJ '+str(xj)+' done\n'
+    if xj in data:
+        XJ=data[xj]  
+        # print(XJ)
+        
+        for offset in XJ:  #XJ={offset:{remain:[note]}}
+            NOTES=XJ[offset]  #NOTES={remain:[note]}
+            bfer+=( SetBlockRight(int(offset),NOTES,speed,BPos) if xj%2!=0 else SetBlockLeft(int(offset),NOTES,speed,BPos) )
+    output=open(outpath+'xj'+str(xj)+'.mcfunction','w+')
     #print(bfer)
     output.write(bfer)
     output.close()
@@ -54,4 +52,4 @@ for k in range(1,i+1):
     bfer+=Str_Clear+Str_setXJ+Str_TP
 AllXJ.write(bfer)
 AllXJ.close()
-print('END')
+print('CSV to function: END')

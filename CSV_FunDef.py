@@ -65,7 +65,7 @@ def SetBlockRight(offset,OFFSET,speed,BPos):  #OFFSET={remain:[notes]}
             
     return bufer
 
-def SetBlockLeft(offset,OFFSET,speed,BPos):
+def SetBlockLeft(offset,OFFSET,speed,BPos):  #abandoned function, only when S shape
      
     bufer=''
     for remain in OFFSET:

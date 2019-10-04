@@ -5,11 +5,9 @@ from Midi_FunDef import parse_event,parse_time
 
 inpath=''
 outpath=''
-filename='XTDM_T1'
+filename='DoctorWho2005'
 f=open(inpath+filename+'.mid',mode='rb')
-result=open(outpath+filename+'.csv','w+',newline='')
-Result=csv.writer(result)
-Result.writerow(['N']) #Will be replace by Block_Per_Offset
+
 
 H_MThd=f.read(4)
 if H_MThd!=b'MThd':
@@ -42,6 +40,7 @@ for Track_Num in range(H_Track_num):
     Track_Flag=1
     Key_DeltaTime=0
     Key_TotalTime=0
+    buffer={}
     while Track_Flag:
         Chunk_DeltaTime=parse_time(f)
         Key_TotalTime+=Chunk_DeltaTime
@@ -54,6 +53,9 @@ for Track_Num in range(H_Track_num):
             Block_Per_Offset=int(MS_Per_Offset/50)
             Tick_Per_Block=int(Tick_Per_Offset/Block_Per_Offset)
         if Event_Data['Event_Type']=='press':
+            Key_Channel=Event_Data['Event_Channel']
+            if not Key_Channel in buffer:
+                buffer[Key_Channel]=[]
             Key_PresentXJ=(Key_TotalTime//Tick_Per_XJ)+1
             Key_Offset_Tick=(Key_TotalTime%Tick_Per_XJ)
             Key_Offset_Note=int(Key_Offset_Tick//Tick_Per_Offset)+1
@@ -64,14 +66,21 @@ for Track_Num in range(H_Track_num):
             #print('remain: ',Key_Offset_Remain,end=' ,')
             #print('Note:',Note)
             Note_Present=[Key_PresentXJ,Key_Offset_Note,Key_Offset_Remain,Note]
-            Result.writerow(Note_Present)
+            buffer[Key_Channel].append(Note_Present)
+            #Result.writerow(Note_Present)
             Key_DeltaTime=0
         Track_Flag=Event_Data['TFlag']
 
     print('Track',Track_Num+1,' done')
 
-result.seek(0)
-Result.writerow([str(Block_Per_Offset)])
-result.close()
+
+for Channel in buffer:
+    result=open(outpath+filename+'_Channel'+str(Channel)+'.csv','w+',newline='')
+    Result=csv.writer(result)
+    Result.writerow([str(Block_Per_Offset)])
+    #Result.writerow(['Current channel is :',Channel])
+    Result.writerows(buffer[Channel])
+    result.close()
+
 
 print('END')

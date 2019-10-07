@@ -44,7 +44,7 @@ def parse_event(f):
 
         elif MetaEvent_Type==b'\x04':
             MetaEvent_Data=f.read(MetaEvent_Len)
-            print('instrument:',MetaEvent_Data)
+#            print('instrument:',MetaEvent_Data)
 
         else:
             MetaEvent_Data=f.read(MetaEvent_Len)

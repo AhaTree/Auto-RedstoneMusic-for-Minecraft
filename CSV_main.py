@@ -3,28 +3,34 @@
 
 import os
 import csv
-from CSV_FunDef import SetBlockRight,SetBlockLeft,ReadSCV
+from CSV_FunDef import SetBlock_SingleLine,SetBlock_DoubleLine,ReadSCV
 
-inpath='mic/'
-TRACK='3'
-filename='XTDM_T'+TRACK+'.csv'
+inpath=''
+TRACK='4'
+filename='LBF_T'+TRACK+'_Channel1.csv'
+Line=''
+
 namespace='track'+TRACK
-outpath='data/track'+TRACK+'/functions/'
+outpath='functions/'
+
+SetBlockRight=SetBlock_SingleLine if Line=='single' else SetBlock_DoubleLine
 
 
-BPos=['21','5','-25'] # [X,Y,Z] of actor_21
+BPos=['21','5','-35'] # [X,Y,Z] of actor_21
 
 
 
 f=open(inpath+filename)
 f_csv=csv.reader(f)
 speed=int(next(f_csv)[0])# X T/note
+if Line=='single':
+    speed=2
 
 data={}  #data={XJ:{offset:{remain:[note]}}}
 
 data=ReadSCV(f_csv)
 
-i=100
+i=55
 for xj in range(1,i+1): 
     bfer='say '+'Track '+TRACK+' XJ '+str(xj)+' done\n'
     if xj in data:

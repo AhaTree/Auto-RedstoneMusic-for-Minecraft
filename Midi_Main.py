@@ -5,7 +5,7 @@ from Midi_FunDef import parse_event,parse_time
 
 inpath=''
 outpath=''
-filename='DoctorWho2005'
+filename='LBF_T4'
 f=open(inpath+filename+'.mid',mode='rb')
 
 
@@ -41,6 +41,7 @@ for Track_Num in range(H_Track_num):
     Key_DeltaTime=0
     Key_TotalTime=0
     buffer={}
+    Note_Last=[]
     while Track_Flag:
         Chunk_DeltaTime=parse_time(f)
         Key_TotalTime+=Chunk_DeltaTime
@@ -66,9 +67,11 @@ for Track_Num in range(H_Track_num):
             #print('remain: ',Key_Offset_Remain,end=' ,')
             #print('Note:',Note)
             Note_Present=[Key_PresentXJ,Key_Offset_Note,Key_Offset_Remain,Note]
-            buffer[Key_Channel].append(Note_Present)
+            if Note_Last!=Note_Present:
+                buffer[Key_Channel].append(Note_Present)
             #Result.writerow(Note_Present)
             Key_DeltaTime=0
+            Note_Last=Note_Present
         Track_Flag=Event_Data['TFlag']
 
     print('Track',Track_Num+1,' done')

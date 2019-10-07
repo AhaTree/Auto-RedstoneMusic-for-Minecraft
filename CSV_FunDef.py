@@ -27,7 +27,30 @@ def GenKeyDic():
         KeyDic[( '' if i==0 else str(i) )+'7#']=60+(i+1)*12
     return KeyDic
 
-def SetBlock(BPOS,SPOS,Cflag):
+
+def SetBlock(BPOS,SPOS,Cflag):  #DURM
+    
+    stb="setblock"
+    B_Pos=" ~"+BPOS[0]+" ~"+BPOS[1]+" ~"+BPOS[2]
+    B_ID=r" minecraft:"+( "chain_" if Cflag else "" )+"command_block[facing=up]"
+    B_Cmd1=r"{TrackOutput:0,Command:'"
+    B_Cmd2=r"'"+( ",auto:1" if Cflag else "" )+"}"
+
+    if SPOS[0]=='59':
+        S_Pos=r'summon minecraft:falling_block 60 15 7 {BlockState:{Name:"minecraft:redstone_block"},Time:1s,Motion:[-1.4,0.6,-2.0]}'
+    elif SPOS[0]=='60':
+        S_Pos=r'summon minecraft:falling_block 60 15 7 {BlockState:{Name:"minecraft:redstone_block"},Time:1s,Motion:[0.18,0.5,-1.9]}'
+    elif SPOS[0]=='61':
+        S_Pos=r'summon minecraft:falling_block 60 15 7 {BlockState:{Name:"minecraft:redstone_block"},Time:1s,Motion:[2.0,0.6,-2.0]}'
+    else:
+        raise Exception('not a drum track!')
+    
+    bufer=stb+B_Pos+B_ID+B_Cmd1+S_Pos+B_Cmd2+'\n'
+
+    return bufer
+
+'''
+def SetBlock(BPOS,SPOS,Cflag):  #PIANO
     
     stb="setblock"
     B_Pos=" ~"+BPOS[0]+" ~"+BPOS[1]+" ~"+BPOS[2]
@@ -38,8 +61,10 @@ def SetBlock(BPOS,SPOS,Cflag):
     
     bufer=stb+B_Pos+B_ID+B_Cmd1+S_Pos+B_Cmd2+'\n'
     return bufer
+'''
 
-def SetBlockRight(offset,OFFSET,speed,BPos):  #OFFSET={remain:[notes]}
+
+def SetBlock_DoubleLine(offset,OFFSET,speed,BPos):  #OFFSET={remain:[notes]}
     
     bufer=''
     for remain in OFFSET:
@@ -63,6 +88,29 @@ def SetBlockRight(offset,OFFSET,speed,BPos):  #OFFSET={remain:[notes]}
             bufer+=SetBlock([px,py,pz],BPOS,bool(Height))
             Height+=1
             
+    return bufer
+
+def SetBlock_SingleLine(offset,OFFSET,speed,BPos):  #OFFSET={remain:[notes]}
+    
+    if len(OFFSET)>1:
+        raise Exception('Not suitable for single line!')
+    bufer=''
+    NOTES=OFFSET[1]
+    Kcount=len(NOTES) # key number
+    Height=0
+
+    for k in range(Kcount):
+
+        [px,py,pz]=['','1','']
+        note=NOTES[k]
+        px=str(2*offset-1)
+        if Height:
+            py=str(Height+1)
+        
+        BPOS=[str(abs(note)),BPos[1],BPos[2]]       
+        bufer+=SetBlock([px,py,pz],BPOS,bool(Height))
+        Height+=1
+        
     return bufer
 
 def SetBlockLeft(offset,OFFSET,speed,BPos):  #abandoned function, only when S shape

@@ -22,3 +22,5 @@ But for the next stage, it will be easier to use for everyone( not really ～(�
 不过我还没测试过hhhh，应该问题不大~
 
 BTW，我还是想把项目名称改成：让猪猪也能做红石音乐！
+
+Nope,猪猪做不了红石音乐
